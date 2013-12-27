@@ -1,0 +1,7 @@
+ranch;ranch;D:\EWS\Cowboy\ranch\src\;D:\EWS\Cowboy\ranch\ebin;0;1;1;
+cowlib;cowlib;D:\EWS\Cowboy\cowlib\src\;D:\EWS\Cowboy\cowlib\ebin;0;1;1;
+crypto;crypto;fake;fake;0;1;1;
+cowboy;cowboy;D:\EWS\Cowboy\cowboy\src\;D:\EWS\Cowboy\cowboy\ebin;0;1;1;
+epgsql;epgsql;D:\EWS\epgsql\src\;D:\EWS\epgsql\ebin;0;1;1;
+poolboy;poolboy;D:\EWS\poolboy\src;D:\EWS\poolboy\ebin;0;1;1;
+brix_test;brix_test;D:\EWS\Brix_test\src\;D:\EWS\Brix_test\ebin;1;1;1;

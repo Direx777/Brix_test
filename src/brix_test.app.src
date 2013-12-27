@@ -1,0 +1,14 @@
+{application, brix_test, [
+	{description, "Brix test."},
+	{vsn, "1"},
+	{modules, []},
+	{registered, [brix_test_sup]},
+	{applications, [
+		kernel,
+		stdlib,
+		ranch,
+		cowboy
+	]},
+	{mod, {brix_test_app, []}},
+	{env, []}       
+]}.

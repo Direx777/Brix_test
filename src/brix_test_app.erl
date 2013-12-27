@@ -24,7 +24,7 @@
 	| {error, Reason :: term()}.
 %% ====================================================================
 start(_Type, _StartArgs) ->
-	{ok, _}	= ranch:start_listener(bt_tcp_devices, 2, ranch_tcp, [{port,7075}], bt_device_proto, []), %Прослушка девайсов
+	{ok, _}	= ranch:start_listener(bt_tcp_devices, 2, ranch_tcp, [{port,7068}], bt_device_proto, []), %Прослушка девайсов
     {ok, _} = ranch:start_listener(bt_tcp_supervisor, 2, ranch_tcp, [{port, 7075}], bt_supervisor_proto, []), %супервизор (отладка)
 	brix_test_sup:start_link().
 

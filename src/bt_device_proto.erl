@@ -1,7 +1,7 @@
 %%Это обработчик TCP запросов (протокол в терминологии рэнча)
 %%Для девайсов (автомобилей в нашем случае)
 
--module(tcp_proto).
+-module(bt_device_proto).
 -behaviour(gen_server).
 -behaviour(ranch_protocol).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
@@ -12,7 +12,7 @@
 %% ====================================================================
 %% API functions
 %% ====================================================================
--export([parse_ext_data/1]).
+%-export([parse_ext_data/1]).
 
 
 
@@ -40,10 +40,10 @@ init(Ref, Socket, Transport, Opts = []) ->
     ok = ranch:accept_ack(Ref),
 	%единичный прием, короче делаем так всегда, чтобы от флуда не страдать и помимо этого прием сообщений от TCP в посылке
     ok = Transport:setopts(Socket, [{active, once},{packet,line}]), %Чтение до #13#10
-    gen_server:enter_loop(?MODULE, [], #state{ref = Ref, socket = Socket, transport = Transport, opts = Opts}).
+    gen_server:enter_loop(?MODULE, [], #innerstate{ref = Ref, socket = Socket, transport = Transport, opts = Opts}).
 %{ok, #state{type = accept_client, ref = Ref, socket = Socket, transport = Transport, opts = Opts}, 0}
 init([]) ->
-    {ok, #state{}}.
+    {ok, #innerstate{}}.
 
 stop() ->
     gen_server:cast(self(), stop).
@@ -57,16 +57,21 @@ handle_cast(Msg, State) ->
 
 
 handle_info(Info, State) ->
-    Socket = State#state.socket,
-    Transport = State#state.transport,
+    Socket = State#innerstate.socket,
+    Transport = State#innerstate.transport,
     {OK, Closed, Error} = Transport:messages(),
     {RemoteIP, RemotePort} = get_ip_and_port(Transport, Socket),
     case Info of
         {OK, Socket, Data} ->
             ok = Transport:setopts(Socket, [{active, once}]),
             io:format(">>> Data received from ~w:~w ('~w'). Data = ~p~n", [RemoteIP, RemotePort, self(), Data]),
-            parse_ext_data(Data),
+			send_data_to_client(State, [<<"You send ">>,Data]),
+            %parse_ext_data(Data),
             {noreply, State};
+		{send,Data} ->
+			io:format(">>> Sending data ~w:~w ('~w'). Data = ~p~n", [RemoteIP, RemotePort, self(), Data]),
+			send_data_to_client(State, Data),
+			{noreply, State};
         {Closed, Socket} ->
             io:format(">>> Client '~w' did disconnected.~n", [self()]),
             {stop, normal, State};
@@ -101,9 +106,10 @@ get_ip_and_port(Transport, Socket) ->
     {RemoteIP, RemotePort}.
 
 send_data_to_client(State, Packet) ->
-    Socket = State#state.socket,
-    Transport = State#state.transport,
-    case Transport:send(Socket, Packet) of
+    Socket = State#innerstate.socket,
+    Transport = State#innerstate.transport,
+	%[<<End/binary,"~r~n">>]
+    case Transport:send(Socket, [Packet,<<13,10>>]) of
         ok ->
             ok;
         Error ->

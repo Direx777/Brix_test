@@ -1,0 +1,9 @@
+{application, smssender, [
+	{description, "Brix SMS sender."},
+	{vsn, "1"},
+	{modules, []},
+	{registered, [smssender_sup]},
+	{applications, [	]},
+	{mod, {smssender_app, []}},
+	{env, []}       
+]}.

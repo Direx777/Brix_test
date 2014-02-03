@@ -39,7 +39,15 @@ start_link() ->
 	Modules :: [module()] | dynamic.
 %% ====================================================================
 init([]) ->
-    {ok,{{one_for_one,10,10}, []}}.
+	Workers=	[
+				{tag1,
+				{smssender, start_link, []},	%Start func
+				permanent,						%Restart Policy
+				10000,							%не знаю что это
+				worker,
+				[smssender]}					%Модули какие-то, хз
+				],
+    {ok,{{one_for_one,10,10}, Workers}}.
 
 %% ====================================================================
 %% Internal functions

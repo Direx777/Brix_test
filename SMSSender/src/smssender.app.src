@@ -3,7 +3,8 @@
 	{vsn, "1"},
 	{modules, []},
 	{registered, [smssender_sup]},
-	{applications, [	]},
+	{applications, [
+		inets	]},
 	{mod, {smssender_app, []}},
 	{env, []}       
 ]}.

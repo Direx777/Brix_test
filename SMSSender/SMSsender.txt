@@ -1,0 +1,1 @@
+smssender;smssender;D:\EWS\Brix_test\SMSSender\src\;D:\EWS\Brix_test\SMSSender\ebin;1;1;1;
